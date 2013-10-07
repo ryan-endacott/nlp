@@ -3,14 +3,12 @@ from nltk.corpus import brown
 
 news_fileids = brown.fileids(categories='news')
 
-news_article = brown.tagged_sents(fileids = news_fileids[0], simplify_tags=True)
+articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fileids]
 
 def rank_sentences(article):
   ranks = []
   for index, sentence in enumerate(article):
-    score = 0
-    for word in sentence:
-      if word[1] == 'NP': score -= 1 # proper noun, lower is better
+    score = -len([word for (word, pos) in sentence if pos == 'NP'])
     heapq.heappush(ranks, (score, index, sentence))
 
   return ranks
@@ -20,13 +18,15 @@ def gen_summary_from_ranks(ranks, n=3):
   for i in range(n):
     sents.append(heapq.heappop(ranks))
   sents.sort(key=lambda x: x[1]) # order by appearance in text
-  summary = ' '.join([word[0] for sent in sents for word in sent[2]])
+  summary = ' '.join([word for sent in sents for (word, pos) in sent[2]])
 
   # Fix some tokens that have spaces after rejoining:
   summary = summary.replace(' ,', ',')
   summary = summary.replace(' .', '.')
   summary = summary.replace(' !', '!')
   summary = summary.replace(' ?', '?')
+  summary = summary.replace('( ', '(')
+  summary = summary.replace(') ', ')')
   return summary
 
 
