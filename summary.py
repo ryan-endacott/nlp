@@ -19,21 +19,24 @@ def gen_summary_from_ranks(ranks, n=3):
     sents.append(heapq.heappop(ranks))
   sents.sort(key=lambda x: x[1]) # order by appearance in text
   summary = ' '.join([word for sent in sents for (word, pos) in sent[2]])
+  return summary
 
-  # Fix some tokens that have spaces after rejoining:
+# Fix some tokens that have spaces after rejoining:
+def clean_summary(summary):
   summary = summary.replace(' ,', ',')
   summary = summary.replace(' .', '.')
   summary = summary.replace(' !', '!')
   summary = summary.replace(' ?', '?')
   summary = summary.replace('( ', '(')
-  summary = summary.replace(') ', ')')
+  summary = summary.replace(' )', ')')
   return summary
 
 
 
 def gen_summary(article):
   ranks = rank_sentences(article)
-  return gen_summary_from_ranks(ranks)
+  summary = gen_summary_from_ranks(ranks)
+  return clean_summary(summary)
 
 
 
