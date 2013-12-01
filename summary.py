@@ -3,6 +3,7 @@ from nltk.corpus import brown
 from nltk.corpus import stopwords
 from collections import defaultdict, Counter
 import networkx as nx
+import re
 
 
 sw = {}
@@ -90,7 +91,8 @@ def gen_summary(article, rank_sentences = textrank_sentences, length=3):
 news_fileids = brown.fileids(categories='news')
 
 articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fileids]
-raw_articles = [clean_summary(' '.join(brown.words(fileids=id))) for id in news_fileids]
+
+raw_articles = [clean_summary(re.sub(r'\/.{1,6}(\s|$)', ' ', brown.raw(fileids=id))) for id in news_fileids]
 
 
 
