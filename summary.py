@@ -1,11 +1,15 @@
 import heapq
 from nltk.corpus import brown
+from nltk.corpus import stopwords
 from collections import defaultdict, Counter
 import networkx as nx
 
-news_fileids = brown.fileids(categories='news')
 
-articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fileids]
+sw = {}
+for word in stopwords.words('english'):
+  sw[word] = True
+
+
 
 def textrank_sentences(article):
 
@@ -20,6 +24,7 @@ def textrank_sentences(article):
   for index, sentence in enumerate(article):
     words = Counter([word for word,pos in sentence])
     for word, freq in words.items():
+      if word in sw: continue # don't count stopwords
       bag_of_words[word].append((index, freq))
 
   # Loop through sentences and add the edges
@@ -82,6 +87,10 @@ def gen_summary(article, rank_sentences = textrank_sentences, length=3):
   return clean_summary(summary)
 
 
+news_fileids = brown.fileids(categories='news')
+
+articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fileids]
+raw_articles = [clean_summary(' '.join(brown.words(fileids=id))) for id in news_fileids]
 
 
 
