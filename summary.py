@@ -105,7 +105,9 @@ raw_articles = [clean_summary(re.sub(r'\/.{1,6}(\s|$)', ' ', brown.raw(fileids=i
 
 if __name__ == "__main__":
   with open(sys.argv[1]) as f:
-    print summarize(f.read(), raw=True)
+    length = 3
+    if len(sys.argv) > 2: length = int(sys.argv[2])
+    print summarize(f.read(), raw=True, length = length)
 
 
 
