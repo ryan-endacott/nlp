@@ -1,4 +1,5 @@
 import heapq
+import sys
 import nltk
 from nltk.corpus import brown
 from nltk.corpus import stopwords
@@ -102,6 +103,9 @@ articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fi
 raw_articles = [clean_summary(re.sub(r'\/.{1,6}(\s|$)', ' ', brown.raw(fileids=id))) for id in news_fileids]
 
 
+if __name__ == "__main__":
+  with open(sys.argv[1]) as f:
+    print summarize(f.read(), raw=True)
 
 
 
