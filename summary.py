@@ -6,6 +6,8 @@ from collections import defaultdict, Counter
 import networkx as nx
 import re
 
+# Add local path to nltk for heroku
+nltk.data.path.append('./nltk_data/')
 
 stopwords = set(stopwords.words('english'))
 
