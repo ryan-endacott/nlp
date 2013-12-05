@@ -12,7 +12,8 @@ def hello():
     if text is None:
       return render_template('index.html', summary="Error, didn't get text to summarize.")
     else:
-      s = summarize(request.form.get('text', None), raw=True)
+      length = int(request.form.get('length', 3)) # default length of 3
+      s = summarize(request.form.get('text', None), raw=True, length=length)
       return render_template('index.html', summary=s)
 
   return render_template('index.html')
