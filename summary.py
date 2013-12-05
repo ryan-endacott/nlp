@@ -1,7 +1,5 @@
-import heapq
 import sys
 import nltk
-from nltk.corpus import brown
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from collections import defaultdict, Counter
@@ -40,33 +38,12 @@ def textrank_sentences(article):
   return sentence_ranks
 
 
-
-def rank_sentences_by_num_proper_nouns(article):
-  ranks = []
-  for index, sentence in enumerate(article):
-    score = -len([word for (word,_) in sentence if pos == 'NP'])
-    heapq.heappush(ranks, (score, index, sentence))
-
-  return ranks
-
-
 def gen_summary_from_ranks(ranks, article, num_sentences=3):
   sents = ranks[:num_sentences]
   # order by appearance in text
   sents.sort()
   summary = ' '.join([word for index in sents for (word,_) in article[index]])
   return summary
-
-
-"""
-def gen_summary_from_ranks(ranks, n=3):
-  sents = []
-  for i in range(n):
-    sents.append(heapq.heappop(ranks))
-  sents.sort(key=lambda x: x[1]) # order by appearance in text
-  summary = ' '.join([word for sent in sents for (word, pos) in sent[2]])
-  return summary
-"""
 
 
 # Fix some tokens that have spaces after rejoining:
@@ -80,7 +57,6 @@ def clean_summary(summary):
   return summary
 
 
-
 def summarize(article, raw=False, rank_sentences=textrank_sentences, length=3):
   if raw:
     article = preprocess_raw_article(article)
@@ -88,19 +64,8 @@ def summarize(article, raw=False, rank_sentences=textrank_sentences, length=3):
   summary = gen_summary_from_ranks(ranks, article, length)
   return clean_summary(summary)
 
-
-def word_tokenize_to_tuple(sentence):
-  return [(word,None) for word in sentence]
-
 def preprocess_raw_article(article):
   return [[(word, None) for word in word_tokenize(sentence)] for sentence in  sent_tokenize(article)]
-
-
-news_fileids = brown.fileids(categories='news')
-
-articles = [brown.tagged_sents(fileids=id, simplify_tags=True) for id in news_fileids]
-
-raw_articles = [clean_summary(re.sub(r'\/.{1,6}(\s|$)', ' ', brown.raw(fileids=id))) for id in news_fileids]
 
 
 if __name__ == "__main__":
