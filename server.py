@@ -14,6 +14,6 @@ def hello():
     else:
       length = int(request.form.get('length', 3)) # default length of 3
       s = summarize(request.form.get('text', None), raw=True, length=length)
-      return render_template('index.html', summary=s)
+      return render_template('index.html', summary=s, text=text)
 
   return render_template('index.html')
